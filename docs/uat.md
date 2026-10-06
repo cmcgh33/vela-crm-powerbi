@@ -1,38 +1,52 @@
 # Desktop UAT
 
-An owner-provided screenshot confirmed the first Desktop open and overview rendering. The remaining checks and latest formatting refinements are pending. File validation does not prove engine evaluation or rendering.
+This document separates observed Desktop behavior from checks still available for a reviewer to reproduce. File validation alone does not prove Power BI engine evaluation or rendering.
 
-1. Open VelaCRM.pbip, refresh, and confirm all four pages render without model or visual errors.
-2. With all slicers clear, match the overview to expected-results.json: Won ACV $24,290,300; open pipeline $8,515,400; win rate 47.3856%; target ACV $19,053,000; attainment gauge about 127.487%. Open deals 176; at-risk deals 110; at-risk ACV $4,969,400; overdue deals 13.
-3. Change the Year to 2026 and select Q3. Closed sales and targets must change; snapshot open pipeline must remain fixed. Clear filters after checking.
-4. Select West. Both closed sales and pipeline must respond. Clear the selection.
-5. Select a customer segment or industry. Target/attainment must be blank, because quotas are not allocated at that grain. Clear filters.
-6. On Pipeline intelligence, change creation MonthYear. Stage-reach counts must change; snapshot cards must remain fixed. Confirm the source→outcome SVG renders, counts reconcile to the selected cohort, and changes with creation-period and rep filters. Its links are not selectable. Check Stage Reach Rate in a temporary table if evaluating this optional measure.
-7. Check stage order Qualified → Discovery → Demo → Proposal → Negotiation. Stage-history totals must not be mistaken for current-stage distribution.
-8. In the attention queue, confirm every displayed deal is open, has positive flagged ACV, and has an attention reason. Right-click an AccountName and drill through to Account detail. The chosen account should appear alone. Return using the native page tabs.
-9. Confirm table scrolling, slicer dropdowns, native chart tooltips, selection interactions, card formatting, and fit-to-page scaling on the Surface.
-10. Save the working project. Replace the design preview with actual Desktop screenshots for GitHub once UAT passes. Record Desktop version and any corrections below.
+## Recorded evidence — 5 October 2026
 
-## Verification log
+| Check | Observed result |
+| --- | --- |
+| Executive overview | Won ACV, win rate, target attainment, and snapshot pipeline reconciled to the fictional baseline |
+| 2026 Q3 sales performance | Won ACV $4,494,500; 100 won deals; win rate about 50.5%; target $2,871,000; attainment about 156.5% |
+| Rep selection | Alex Rivera Q3 selection displayed $226,000 won ACV, 9 won deals, and about 97.8% attainment; rep scorecard and scatter filtered |
+| Account drill-through | Account detail showed the selected Beacon 029 account; the drill-through filter was subsequently cleared |
+| Source/outcome flow | SVG rendered in Desktop; image height increased to 220 and both label groups set to 20 to improve readability |
+| Stage reach funnel | Counts displayed as whole values with display units disabled |
+| Formatting | Owner reviewed the ombré background, sales scorecard spacing, chart colors, and filter-pane readability |
+| Probability data type | Fractional probabilities retained as decimal values in Opportunities and Stages; weighted pipeline corrected from about $2.68M to $3.70M |
+| Published evidence | Actual Desktop screenshots are included in `design/` and displayed in the README |
 
-- Generated PBIR files: checked against vendored Microsoft JSON schemas.
-- Field bindings, canvas bounds, IDs, history dates and close dates: checked in Python.
-- Design preview: visually inspected, generated separately from synthetic CSVs.
-- First Desktop open and overview rendering: confirmed by owner screenshot on 5 October 2026; win rate 47.4% and attainment 127.5% matched expected results. Currency values displayed rounded ($24M / $9M / $5M).
-- Latest refinements: added currency precision, removed duplicated slicer titles, reduced textbox padding, and gave lower charts more height; Desktop verification pending.
-- Refresh, all-page DAX reconciliation, and interactions: pending.
+The Power BI Desktop version was not recorded. These are owner-observed checks, not a claim that every scenario below was executed.
 
-## Graphics revision pending Desktop checks
+## Reproduce the baseline
 
-- Overview: quota gauge target 100%, dynamic maximum >=150%, and risk donut reconciles to total open pipeline.
-- Pipeline: source-to-outcome SVG ImageUrl measure in a native table; inspect image scaling and empty-cohort behavior.
-- Stage funnel: verify Stage Reached Deals is bound to stage categories and correctly ordered.
-- Performance: scatter x=Won ACV, y=Win Rate, bubble size=Open Pipeline ACV, point=rep; hover to check values. Bubble size deliberately describes snapshot exposure, not closed-period volume.
-- Account and rep filters should affect risk donut and bubble measures; quotas remain blank for unsupported account breakdowns.
+Open `VelaCRM.pbip`, refresh, and clear slicers. Compare the overview with `expected-results.json`:
 
-## Desktop evidence and formatting correction
+- Won ACV: $24,290,300
+- Open pipeline: $8,515,400; 176 open deals
+- Weighted pipeline: $3,703,000
+- Win rate: 47.3856%
+- Target ACV: $19,053,000; attainment about 127.487%
+- At-risk deals: 110; at-risk ACV: $4,969,400
+- Overdue deals: 13
 
-Owner screenshot on 5 October confirmed the source/outcome SVG computed and rendered, but its table cell was tiny. Native funnel and attention queue rendered. Numeric formatting settings were incorrectly encoded without type suffixes, so Desktop ignored image sizing and currency precision. Builder now writes typed D/L literals, explicitly sizes the flow column and image, disables conflicting table presets, and assigns stage/risk category colors. The corrected build passes schema and typed-literal checks; re-open and visual inspection are pending.
+## Interaction scenarios
 
-## Ombré and scorecard revision
-Verify the embedded navy-to-violet background on all four pages. Sales performance now uses a taller 1440 × 1020 canvas with a 270-pixel rep scorecard, 10-point values, 2-pixel row padding, and columns set to grow to fill the table. Verify all 12 reps and the total are readable in Power BI Desktop.
+1. Select Year 2026 and Q3. Closed sales and targets change; snapshot open pipeline stays fixed. Clear filters afterward.
+2. Select West. Closed sales and snapshot pipeline should respond. Clear the selection.
+3. Select customer segment or industry. Target and attainment must be blank because quotas are not allocated at that grain.
+4. On Pipeline intelligence, change the creation period. Stage-reach counts and the source/outcome flow should respond; snapshot cards remain fixed. Reconcile the flow counts to the selected cohort. The flow links are not independently selectable.
+5. Confirm funnel order Qualified → Discovery → Demo → Proposal → Negotiation. Stage-history counts describe cohort reach, not the current stage distribution.
+6. In the attention queue, confirm every displayed deal is open, has positive flagged ACV, and has an attention reason.
+7. Right-click an AccountName and drill through to Account detail. Confirm only that account appears. Clear the drill-through filter after testing.
+8. Select a rep on Sales performance. Check the scorecard, scatter, monthly won ACV, and targets. Scatter bubble size describes snapshot pipeline exposure.
+9. Confirm table scrolling, slicer dropdowns, native tooltips, label readability, and scaling. The rep scorecard may require scrolling to view all 12 reps.
+10. Check empty-filter selections and unsupported target breakdowns for clear blank behavior.
+
+## Technical validation and remaining scope
+
+Field bindings, canvas bounds, IDs, history dates, close dates, and decimal probability types were checked in Python. The original generated report was checked against vendored Microsoft JSON schemas.
+
+Desktop upgraded the report definitions to newer schema versions that are not vendored here. Run `python tools/validate_project.py --allow-newer-schemas` for the available schema and structural checks; this explicitly skips missing schema versions and does not establish full newer-schema validation.
+
+Full reconciliation of every DAX measure and every interaction scenario remains available for further review. Service deployment, scheduled refresh, RLS, and cross-report drill-through have not been tested.
