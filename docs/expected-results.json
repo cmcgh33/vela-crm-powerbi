@@ -1,0 +1,18 @@
+{
+  "snapshot": "2026-09-30",
+  "opportunities": 1400,
+  "accounts": 180,
+  "history_rows": 5283,
+  "won_acv": 24290300,
+  "won_deals": 580,
+  "lost_deals": 644,
+  "win_rate": 0.4738562091503268,
+  "open_deals": 176,
+  "open_pipeline_acv": 8515400,
+  "weighted_pipeline_acv": 3703000.0,
+  "at_risk_deals": 110,
+  "at_risk_pipeline_acv": 4969400,
+  "overdue_deals": 13,
+  "target_acv": 19053000.0,
+  "average_sales_cycle": 93.76896551724138
+}

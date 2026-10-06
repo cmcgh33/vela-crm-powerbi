@@ -1,0 +1,139 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 768.273145240119,
+            "y": -50
+          },
+          "nodeIndex": "Accounts",
+          "nodeLineageTag": "2884181c-758b-499c-a726-d0ecfb6ec5bd",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 566.95224176585339,
+            "y": 532.35651914796472
+          },
+          "nodeIndex": "Activities",
+          "nodeLineageTag": "ed305923-261e-4ffc-9ec6-6df1ab2fd9dc",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 337.05589571796327,
+            "y": -8.3025402195224842
+          },
+          "nodeIndex": "Date",
+          "nodeLineageTag": "1e19d688-624e-4a19-be7d-0c6ba7a157cb",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 624.07547749451783,
+            "y": 179.11417078222735
+          },
+          "nodeIndex": "Opportunities",
+          "nodeLineageTag": "b406c3f3-a499-4b0b-8e3c-a71f95c0d102",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1145.1620403075433,
+            "y": 327.17825957398242
+          },
+          "nodeIndex": "Risk Bands",
+          "nodeLineageTag": "9460aef7-a56d-4e66-83ae-2cd336b69f2f",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 157.9590750077823,
+            "y": 292.33101014784404
+          },
+          "nodeIndex": "Sales Reps",
+          "nodeLineageTag": "c65f400c-3abb-4111-b5d9-97653fcfc0b9",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 911.16204030754329,
+            "y": 218.52818933398453
+          },
+          "nodeIndex": "Stage History",
+          "nodeLineageTag": "9ebbf899-954a-421a-b600-6dea9d101896",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 911.11259054722632,
+            "y": 494.46978595679491
+          },
+          "nodeIndex": "Stages",
+          "nodeLineageTag": "adae8ac2-f687-4944-be94-09216e7278c9",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": 4.7603151574190861
+          },
+          "nodeIndex": "Targets",
+          "nodeLineageTag": "7d809633-d2e4-4910-bc69-b6ac0a8074c4",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

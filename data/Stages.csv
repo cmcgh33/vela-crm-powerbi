@@ -1,0 +1,8 @@
+StageID,StageName,StageOrder,Probability
+1,Qualified,1,0.15
+2,Discovery,2,0.3
+3,Demo,3,0.5
+4,Proposal,4,0.7
+5,Negotiation,5,0.85
+6,Closed won,6,1
+7,Closed lost,7,0

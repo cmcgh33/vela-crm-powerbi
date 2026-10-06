@@ -1,0 +1,124 @@
+Won ACV =
+CALCULATE(SUM(Opportunities[ACV]), Opportunities[Status] = "Won")
+
+Won Deals =
+CALCULATE(COUNTROWS(Opportunities), Opportunities[Status] = "Won")
+
+Lost Deals =
+CALCULATE(COUNTROWS(Opportunities), Opportunities[Status] = "Lost")
+
+Closed Deals =
+[Won Deals] + [Lost Deals]
+
+Win Rate =
+DIVIDE([Won Deals], [Closed Deals])
+
+Average Won ACV =
+DIVIDE([Won ACV], [Won Deals])
+
+Average Sales Cycle =
+CALCULATE(AVERAGE(Opportunities[SalesCycleDays]), Opportunities[Status] = "Won")
+
+Open Pipeline ACV =
+CALCULATE(SUM(Opportunities[ACV]), REMOVEFILTERS('Date'), Opportunities[Status] = "Open")
+
+Weighted Pipeline ACV =
+CALCULATE(SUMX(Opportunities, Opportunities[ACV] * Opportunities[Probability]), REMOVEFILTERS('Date'), Opportunities[Status] = "Open")
+
+Open Deals =
+CALCULATE(COUNTROWS(Opportunities), REMOVEFILTERS('Date'), Opportunities[Status] = "Open")
+
+At Risk Pipeline ACV =
+CALCULATE([Open Pipeline ACV], Opportunities[IsAtRisk] = 1)
+
+At Risk Deals =
+CALCULATE([Open Deals], Opportunities[IsAtRisk] = 1)
+
+Overdue Deals =
+CALCULATE([Open Deals], Opportunities[IsOverdue] = 1)
+
+Target ACV =
+IF(ISCROSSFILTERED(Accounts) || ISFILTERED(Opportunities[LeadSource]) || ISFILTERED(Opportunities[Product]) || ISCROSSFILTERED(Stages), BLANK(), CALCULATE(SUM(Targets[TargetACV]), KEEPFILTERS('Date'[Date] <= DATE(2026, 9, 30))))
+
+Target Attainment =
+DIVIDE([Won ACV], [Target ACV])
+
+Won ACV Prior Year =
+CALCULATE([Won ACV], DATEADD('Date'[Date], -1, YEAR))
+
+Won ACV YoY =
+DIVIDE([Won ACV] - [Won ACV Prior Year], [Won ACV Prior Year])
+
+Pipeline Risk Share =
+DIVIDE([At Risk Pipeline ACV], [Open Pipeline ACV])
+
+Average Current Stage Age =
+CALCULATE(AVERAGE(Opportunities[DaysInStage]), REMOVEFILTERS('Date'), Opportunities[Status] = "Open")
+
+Accounts in Context =
+DISTINCTCOUNT(Opportunities[AccountID])
+
+Snapshot Label =
+"Pipeline snapshot · 30 Sep 2026"
+
+Stage Reached Deals =
+VAR Cohort = CALCULATETABLE(VALUES(Opportunities[OpportunityID]), CROSSFILTER('Date'[Date], Opportunities[CloseDate], NONE), USERELATIONSHIP('Date'[Date], Opportunities[CreatedDate]), REMOVEFILTERS(Stages)) RETURN CALCULATE(DISTINCTCOUNT('Stage History'[OpportunityID]), TREATAS(Cohort, 'Stage History'[OpportunityID]))
+
+Cohort Qualified Deals =
+CALCULATE([Stage Reached Deals], REMOVEFILTERS(Stages), Stages[StageID] = 1)
+
+Stage Reach Rate =
+DIVIDE([Stage Reached Deals], [Cohort Qualified Deals])
+
+Average Completed Stage Days =
+VAR Cohort = CALCULATETABLE(VALUES(Opportunities[OpportunityID]), CROSSFILTER('Date'[Date], Opportunities[CloseDate], NONE), USERELATIONSHIP('Date'[Date], Opportunities[CreatedDate]), REMOVEFILTERS(Stages)) RETURN CALCULATE(AVERAGE('Stage History'[DaysInStage]), TREATAS(Cohort, 'Stage History'[OpportunityID]), 'Stage History'[ExitedDate] <> BLANK())
+
+Last Activity Date =
+MAX(Activities[ActivityDate])
+
+Attention Deal ACV =
+CALCULATE(SUM(Opportunities[ACV]), REMOVEFILTERS('Date'), Opportunities[Status] = "Open", Opportunities[IsAtRisk] = 1)
+
+Cohort Deals =
+CALCULATE(COUNTROWS(Opportunities), CROSSFILTER('Date'[Date], Opportunities[CloseDate], NONE), USERELATIONSHIP('Date'[Date], Opportunities[CreatedDate]), REMOVEFILTERS(Stages))
+
+Gauge Minimum =
+0
+
+Gauge Maximum =
+MAX(1.5, [Target Attainment] * 1.15)
+
+Gauge Target =
+1
+
+Pipeline by Risk Band =
+VAR Flag = SELECTEDVALUE('Risk Bands'[RiskID]) RETURN IF(NOT ISBLANK(Flag), CALCULATE([Open Pipeline ACV], Opportunities[IsAtRisk] = Flag))
+
+Source Outcome Flow SVG =
+VAR Sources = DATATABLE("SourceName", STRING, "I", INTEGER, "C", STRING, {{"Partner",0,"#26D9EA"},{"Inbound",1,"#4785FF"},{"Outbound",2,"#A875FF"},{"Event",3,"#F85BA5"}})
+VAR Outcomes = DATATABLE("Outcome", STRING, "J", INTEGER, "D", STRING, {{"Won",0,"#26D9EA"},{"Lost",1,"#F85BA5"},{"Open",2,"#FFBD59"}})
+VAR Total = [Cohort Deals]
+VAR Scale = DIVIDE(200, Total, 0)
+VAR Links = CONCATENATEX(Sources,
+ VAR S = [SourceName] VAR SI = [I] VAR SC = [C]
+ RETURN CONCATENATEX(Outcomes,
+  VAR O = [Outcome] VAR OI = [J] VAR OC = [D]
+  VAR N = CALCULATE([Cohort Deals], Opportunities[LeadSource] = S, Opportunities[Status] = O)
+  VAR PriorS = SUMX(FILTER(Outcomes, [J] < OI), VAR PO = [Outcome] RETURN CALCULATE([Cohort Deals], Opportunities[LeadSource] = S, Opportunities[Status] = PO))
+  VAR PriorO = SUMX(FILTER(Sources, [I] < SI), VAR PS = [SourceName] RETURN CALCULATE([Cohort Deals], Opportunities[LeadSource] = PS, Opportunities[Status] = O))
+  VAR SY = 24 + SI * 24 + SUMX(FILTER(Sources, [I] < SI), VAR PS = [SourceName] RETURN CALCULATE([Cohort Deals], Opportunities[LeadSource] = PS)) * Scale + (PriorS + N / 2) * Scale
+  VAR DY = 35 + OI * 35 + SUMX(FILTER(Outcomes, [J] < OI), VAR PO = [Outcome] RETURN CALCULATE([Cohort Deals], Opportunities[Status] = PO)) * Scale + (PriorO + N / 2) * Scale
+  VAR W = N * Scale
+  RETURN IF(N > 0, "<defs><linearGradient id='g" & SI & OI & "'><stop stop-color='" & SC & "'/><stop offset='1' stop-color='" & OC & "'/></linearGradient></defs><path d='M 192 " & FORMAT(SY,"0.00","en-US") & " C 415 " & FORMAT(SY,"0.00","en-US") & " 585 " & FORMAT(DY,"0.00","en-US") & " 808 " & FORMAT(DY,"0.00","en-US") & "' fill='none' stroke='url(#g" & SI & OI & ")' stroke-opacity='0.58' stroke-width='" & FORMAT(W,"0.00","en-US") & "'/>", ""), ""), "")
+VAR LeftNodes = CONCATENATEX(Sources,
+ VAR S = [SourceName] VAR SI = [I] VAR SC = [C]
+ VAR N = CALCULATE([Cohort Deals], Opportunities[LeadSource] = S)
+ VAR Y = 24 + SI * 24 + SUMX(FILTER(Sources, [I] < SI), VAR PS = [SourceName] RETURN CALCULATE([Cohort Deals], Opportunities[LeadSource] = PS)) * Scale
+ RETURN IF(N > 0, "<rect x='14' y='" & Y & "' width='178' height='" & FORMAT(N*Scale,"0.00","en-US") & "' rx='8' fill='" & SC & "'/><text x='28' y='" & (Y+19) & "' font-size='14' font-weight='600' fill='#070A18'>" & S & " · " & FORMAT(N,"#,0") & "</text>", ""), "")
+VAR RightNodes = CONCATENATEX(Outcomes,
+ VAR O = [Outcome] VAR OI = [J] VAR OC = [D]
+ VAR N = CALCULATE([Cohort Deals], Opportunities[Status] = O)
+ VAR Y = 35 + OI * 35 + SUMX(FILTER(Outcomes, [J] < OI), VAR PO = [Outcome] RETURN CALCULATE([Cohort Deals], Opportunities[Status] = PO)) * Scale
+ RETURN IF(N > 0, "<rect x='808' y='" & Y & "' width='178' height='" & FORMAT(N*Scale,"0.00","en-US") & "' rx='8' fill='" & OC & "'/><text x='822' y='" & (Y+19) & "' font-size='14' font-weight='600' fill='#070A18'>" & O & " · " & FORMAT(N,"#,0") & "</text>", ""), "")
+VAR Svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='340' viewBox='0 0 1000 340'><rect width='1000' height='340' fill='#11152A'/><g font-family='Segoe UI'>" & Links & LeftNodes & RightNodes & "</g></svg>"
+RETURN IF(Total > 0, "data:image/svg+xml;utf8," & SUBSTITUTE(Svg,"#","%23"))

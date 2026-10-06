@@ -1,0 +1,6 @@
+.pbi/
+**/.pbi/
+*.pbix
+__pycache__/
+*.pyc
+.venv/

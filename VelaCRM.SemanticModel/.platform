@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "VelaCRM"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "0dbd6c36-50c2-4d14-9cc1-54ab2c53e780"
+  }
+}

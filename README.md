@@ -6,7 +6,7 @@ A Power BI portfolio project by Carla McGhee. A dark neon theme uses cyan, viole
 
 ![Pipeline intelligence in Power BI Desktop](design/pipeline-desktop.png)
 
-**Status:** Opened and reviewed in Power BI Desktop. Baseline totals, 2026 Q3 sales results, rep filtering, and account drill-through were checked against the fictional source data. Report definitions were checked for schema compatibility and bindings. These screenshots show the actual Desktop report. Service deployment and scheduled refresh have not been tested.
+**Status:** Opened and reviewed in Power BI Desktop. Baseline totals, 2026 Q3 sales results, rep filtering, and account drill-through were checked against the fictional source data. Field bindings, canvas bounds, and source data integrity were checked. Desktop upgraded the report schema versions; full validation against those newer schemas remains pending because they are not vendored here. These screenshots show the actual Desktop report. Service deployment and scheduled refresh have not been tested.
 
 ## Open locally
 
@@ -52,7 +52,7 @@ Native visuals, dropdown slicers, chart sorting, account drill-through metadata,
 
 ```sh
 python tools/build_project.py
-python tools/validate_project.py
+python tools/validate_project.py --allow-newer-schemas
 python tools/render_flow_preview.py
 ```
 
