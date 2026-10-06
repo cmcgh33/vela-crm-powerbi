@@ -8,9 +8,17 @@ A Power BI portfolio project by Carla McGhee. A dark neon theme uses cyan, viole
 
 **Status:** Opened and reviewed in Power BI Desktop. Baseline totals, 2026 Q3 sales results, rep filtering, and account drill-through were checked against the fictional source data. Field bindings, canvas bounds, and source data integrity were checked. Desktop upgraded the report schema versions; full validation against those newer schemas remains pending because they are not vendored here. These screenshots show the actual Desktop report. Service deployment and scheduled refresh have not been tested.
 
+## Review the project in two minutes
+
+- Browse the actual Desktop screenshots and the four report pages below.
+- Read the [metric definitions](docs/metric-definitions.md) for date behavior, target grain, and pipeline assumptions.
+- Review the [recorded Desktop checks and UAT scenarios](docs/uat.md), then open the project locally to explore the interactions.
+
+![Sales performance in Power BI Desktop — 2026 Q3](design/sales-q3-desktop.png)
+
 ## Open locally
 
-1. Download the ZIP and choose **Extract All** in Windows. Keep the entire folder together.
+1. Choose **Code → Download ZIP** on this repository, then choose **Extract All** in Windows. Keep the entire folder together.
 2. Open **VelaCRM.pbip** inside the extracted folder with the current Power BI Desktop.
 3. If Windows does not recognize `.pbip`, open Power BI Desktop and use **File → Open** to select it. If project support is disabled in an older Desktop build, update Desktop and check its project/developer format settings.
 4. Choose **Refresh**. The model contains embedded fictional data, so there is no source path, credential, or gateway to configure.
